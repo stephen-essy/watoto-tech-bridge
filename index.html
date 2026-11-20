@@ -41,7 +41,7 @@
             align-items: center;
             border-bottom: 1px solid var(--line);
         }
-        nav { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        nav { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; }
         .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
         .brand-mark {
             width: 42px; height: 42px; border-radius: 12px;
@@ -55,6 +55,9 @@
         .nav-links { display: flex; align-items: center; gap: 34px; }
         .nav-links a { color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 700; }
         .nav-links a.active { color: var(--green); }
+        .nav-toggle { display: none; width: 44px; height: 44px; padding: 11px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); align-content: center; gap: 5px; }
+        .nav-toggle span { display: block; width: 100%; height: 3px; border-radius: 3px; background: var(--ink); transition: transform .2s, opacity .2s; }
+        .nav-toggle:hover { border-color: var(--green); }
 
         .hero {
             min-height: 360px;
@@ -281,11 +284,20 @@
             .slide-side { flex-direction: row; overflow-x: auto; }
             .slide-thumb { min-width: 140px; }
         }
+        @media (max-width: 760px) {
+            .nav-toggle { display: grid; }
+            .nav-links { display: none; position: absolute; top: calc(100% + 10px); right: 0; left: 0; z-index: 40; flex-direction: column; align-items: stretch; gap: 0; padding: 10px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
+            .nav-links.open { display: flex; }
+            .nav-links a { padding: 12px 14px; border-radius: 12px; }
+            .nav-links a.active, .nav-links a:hover { background: #f3faf5; color: var(--green); }
+            .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+            .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        }
         @media (max-width: 620px) {
             .shell { width: min(calc(100% - 24px), 1180px); }
             header { height: auto; padding: 14px 0; }
             nav { flex-wrap: wrap; gap: 12px; }
-            .nav-links { gap: 18px; }
             .toolbar { align-items: flex-start; flex-direction: column; }
             .grid, .video-grid, .activity-grid, .quiz-grid, .easy-panel { grid-template-columns: 1fr; }
             .day-select select { max-width: 220px; }
@@ -301,7 +313,10 @@
                 <!-- <span class="brand-mark">W<span style="color:var(--lime)">T</span></span> -->
                 <span class="brand-text"><strong>Watoto Tech Bridge</strong><span>Learn. Build. Lead.</span></span>
             </a>
-            <div class="nav-links">
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Open navigation" aria-controls="navLinks" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
                 <a class="active" href="#library">Library</a>
                 <a href="#about">About</a>
                 <a href="#videos">Videos</a>
@@ -815,6 +830,25 @@
         const challengeCard = document.getElementById("challengeCard");
         const scoreCelebration = document.getElementById("scoreCelebration");
         const search = document.getElementById("search");
+        const navToggle = document.getElementById("navToggle");
+        const navLinks = document.getElementById("navLinks");
+
+        function closeNav() {
+            navLinks.classList.remove("open");
+            navToggle.setAttribute("aria-expanded", "false");
+            navToggle.setAttribute("aria-label", "Open navigation");
+        }
+
+        navToggle.addEventListener("click", () => {
+            const open = !navLinks.classList.contains("open");
+            navLinks.classList.toggle("open", open);
+            navToggle.setAttribute("aria-expanded", String(open));
+            navToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+        });
+        navLinks.addEventListener("click", event => { if (event.target.closest("a")) closeNav(); });
+        document.addEventListener("click", event => { if (!event.target.closest("nav.shell")) closeNav(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape") closeNav(); });
+        window.addEventListener("resize", () => { if (window.innerWidth > 760) closeNav(); });
 
         function loadProgress() {
             try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
