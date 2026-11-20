@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f5ef">
+    <title>Watoto Tech Bridge | Learning Library</title>
+    <style>
+        :root {
+            --ink: #17231e;
+            --muted: #667069;
+            --paper: #f7f5ef;
+            --card: #ffffff;
+            --line: #dedfd7;
+            --green: #1e6847;
+            --green-dark: #125139;
+            --lime: #d8ef87;
+            --yellow: #f5ca63;
+            --peach: #efb89c;
+            --blue: #9fc4d8;
+            --shadow: 0 16px 40px rgba(23, 35, 30, .08);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: Inter, Aptos, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+
+        .shell { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+
+        header {
+            height: 88px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+        }
+        nav { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+        .brand-mark {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: grid; place-items: center;
+            background: var(--green); color: white;
+            font-weight: 900; letter-spacing: -2px;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,.12);
+        }
+        .brand-text strong { display: block; font-family: Georgia, serif; font-size: 20px; }
+        .brand-text span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+        .nav-links { display: flex; align-items: center; gap: 34px; }
+        .nav-links a { color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 700; }
+        .nav-links a.active { color: var(--green); }
+
+        .hero {
+            min-height: 360px;
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            align-items: center;
+            gap: 60px;
+            padding: 58px 0 48px;
+        }
+        .eyebrow { color: var(--green); font-size: 12px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        h1 {
+            max-width: 760px;
+            margin: 14px 0 18px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(48px, 6vw, 78px);
+            line-height: .98;
+            letter-spacing: -4px;
+        }
+        .hero p { max-width: 590px; color: var(--muted); font-size: 18px; line-height: 1.65; }
+        .hero-art { position: relative; height: 260px; }
+        .orbit {
+            position: absolute; width: 230px; height: 230px; right: 20px; top: 10px;
+            border: 2px solid var(--ink); border-radius: 50%;
+        }
+        .orbit::before, .orbit::after {
+            content: ""; position: absolute; border-radius: 50%; border: 2px solid var(--ink);
+        }
+        .orbit::before { width: 110px; height: 110px; left: -38px; top: 72px; background: var(--yellow); }
+        .orbit::after { width: 74px; height: 74px; right: -22px; top: -28px; background: var(--lime); }
+        .hero-card {
+            position: absolute; z-index: 2; width: 190px; height: 145px;
+            right: 65px; top: 58px; padding: 18px;
+            transform: rotate(5deg); border: 2px solid var(--ink); border-radius: 18px;
+            background: var(--card); box-shadow: 10px 10px 0 var(--peach);
+        }
+        .hero-card small { color: var(--muted); }
+        .code-lines { display: grid; gap: 8px; margin-top: 22px; }
+        .code-lines i { height: 7px; border-radius: 20px; background: var(--green); }
+        .code-lines i:nth-child(1) { width: 75%; }.code-lines i:nth-child(2) { width: 94%; background: var(--yellow); }.code-lines i:nth-child(3) { width: 55%; }
+
+        .library { border-top: 1px solid var(--line); padding: 42px 0 70px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; }
+        .toolbar h2 { margin: 5px 0 0; font-family: Georgia, serif; font-size: 38px; letter-spacing: -1px; }
+        .search-wrap { width: min(330px, 100%); position: relative; }
+        .search-wrap input {
+            width: 100%; height: 48px; border: 1px solid var(--line); border-radius: 100px;
+            background: var(--card); padding: 0 46px 0 18px; outline: none; color: var(--ink);
+        }
+        .search-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(30,104,71,.10); }
+        .search-wrap span { position: absolute; right: 18px; top: 12px; }
+
+        .filters { display: flex; gap: 8px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 2px; }
+        .filter {
+            border: 1px solid var(--line); background: transparent; border-radius: 100px;
+            padding: 9px 15px; color: var(--muted); font-size: 13px; font-weight: 800; white-space: nowrap;
+        }
+        .filter.active { background: var(--green); border-color: var(--green); color: white; }
+
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .deck {
+            min-height: 330px; border: 1px solid var(--line); border-radius: 20px;
+            background: var(--card); overflow: hidden; transition: transform .2s, box-shadow .2s;
+        }
+        .deck:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+        .deck-cover { height: 150px; padding: 20px; position: relative; overflow: hidden; }
+        .deck-cover.scratch { background: var(--yellow); }.deck-cover.python { background: var(--lime); }
+        .deck-cover.web { background: var(--blue); }.deck-cover.games { background: var(--peach); }
+        .deck-cover.fundamentals { background: #cab8df; }
+        .cover-number { font-family: Georgia, serif; font-size: 64px; line-height: 1; opacity: .15; position: absolute; right: 16px; bottom: -8px; }
+        .category { display: inline-block; padding: 6px 9px; border: 1px solid rgba(23,35,30,.35); border-radius: 100px; font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .cover-icon { position: absolute; left: 20px; bottom: 18px; width: 54px; height: 54px; border: 2px solid var(--ink); border-radius: 14px; background: white; display: grid; place-items: center; font-size: 24px; transform: rotate(-4deg); }
+        .deck-body { padding: 18px 20px 20px; }
+        .deck h3 { margin: 0 0 8px; font-family: Georgia, serif; font-size: 21px; line-height: 1.15; }
+        .deck p { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .deck-actions { display: flex; align-items: center; justify-content: space-between; }
+        .view-btn { border: 0; background: transparent; color: var(--green); font-weight: 900; padding: 5px 0; }
+        .slides { color: var(--muted); font-size: 12px; }
+        .empty { display: none; grid-column: 1/-1; border: 1px dashed var(--line); border-radius: 20px; padding: 50px; text-align: center; color: var(--muted); }
+
+        .video-section { border-top: 1px solid var(--line); padding: 44px 0 70px; }
+        .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .video-card { border: 1px solid var(--line); border-radius: 20px; background: var(--card); overflow: hidden; }
+        .video-card iframe { width: 100%; aspect-ratio: 16 / 9; display: block; border: 0; background: #111; }
+        .video-card video { width: 100%; aspect-ratio: 16 / 9; display: block; background: #111; }
+        .video-card-body { padding: 16px 18px 18px; }
+        .video-card h3 { margin: 0 0 6px; font-family: Georgia, serif; font-size: 19px; }
+        .video-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+        .activity-section { border-top: 1px solid var(--line); padding: 44px 0 70px; }
+        .activity-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .activity-card { position: relative; min-height: 250px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); padding: 22px; display: flex; flex-direction: column; }
+        .activity-card.today { border: 2px solid var(--green); box-shadow: 0 14px 35px rgba(30,104,71,.10); }
+        .activity-card.completed { background: #f8fff2; }
+        .activity-day { color: var(--green); font-size: 11px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; }
+        .activity-card h3 { margin: 10px 0 8px; font-family: Georgia, serif; font-size: 21px; }
+        .activity-card p { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .activity-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
+        .activity-tag { border: 1px solid var(--line); border-radius: 100px; padding: 6px 9px; color: var(--muted); font-size: 10px; font-weight: 900; }
+        .activity-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .activity-btn { border: 1px solid var(--green); border-radius: 100px; background: var(--green); color: white; padding: 9px 12px; font-size: 12px; font-weight: 900; }
+        .activity-btn.secondary { background: white; color: var(--green); }
+        .progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; color: var(--muted); font-size: 13px; }
+        .progress-track { height: 8px; flex: 1; max-width: 260px; margin-left: 16px; border-radius: 20px; background: var(--line); overflow: hidden; }
+        .progress-fill { height: 100%; width: 0; border-radius: inherit; background: var(--green); transition: width .25s; }
+        .activity-modal-body { width: 100%; max-width: 680px; padding: 24px; overflow: auto; }
+        .activity-modal-body h2 { margin: 8px 0 12px; font-family: Georgia, serif; }
+        .activity-modal-body ol { padding-left: 20px; }
+        .activity-modal-body li { margin: 10px 0; line-height: 1.5; }
+
+        footer { border-top: 1px solid var(--line); padding: 26px 0; color: var(--muted); font-size: 13px; }
+        footer .shell { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        footer span:first-child { color: var(--ink); font-weight: 900; }
+
+        .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(23,35,30,.55); }
+        .modal.open { display: flex; }
+        .viewer { width: min(980px, 100%); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--paper); box-shadow: var(--shadow); }
+        .viewer-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); background: var(--card); }
+        .viewer-bar strong { font-family: Georgia, serif; font-size: 18px; }
+        .close-btn { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; line-height: 1; }
+        .close-btn:hover { background: var(--green); border-color: var(--green); color: white; }
+        .slide-area { display: grid; grid-template-columns: 1fr 190px; gap: 16px; padding: 18px; overflow: auto; }
+        .slide { position: relative; min-height: 320px; padding: 30px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); cursor: pointer; }
+        .slide-num { color: var(--green); font-size: 11px; font-weight: 900; letter-spacing: 2px; }
+        .slide h2 { margin: 12px 0 18px; font-family: Georgia, serif; font-size: 30px; line-height: 1.15; }
+        .slide ul { padding-left: 20px; color: var(--muted); line-height: 1.7; }
+        .slide-side { display: flex; flex-direction: column; gap: 8px; overflow: auto; }
+        .slide-thumb { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--muted); font-size: 12px; font-weight: 800; text-align: left; }
+        .slide-thumb.active { border-color: var(--green); background: #f3faf5; color: var(--green); }
+        .slide-actions, .resource-links { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+        .book-link { display: inline-block; padding: 9px 14px; border-radius: 100px; background: var(--green); color: white; font-size: 12px; font-weight: 900; text-decoration: none; }
+        .slide-note { color: var(--muted); font-size: 11px; }
+        .slide-nav { display: flex; gap: 8px; margin-top: 20px; }
+        .slide-nav button { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); }
+
+        .plan-summary { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
+        .plan-chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 13px; border: 1px solid var(--line); border-radius: 100px; background: var(--card); color: var(--ink); font-size: 12px; font-weight: 800; }
+        .plan-chip strong { color: var(--green); }
+        .filters.sub { margin-top: -10px; }
+        .status-badge { margin-left: 8px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 100px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .status-badge.today { border-color: var(--yellow); background: var(--yellow); color: var(--ink); }
+        .status-badge.done { border-color: var(--green); background: var(--green); color: white; }
+        .activity-card.done { background: #f8fff2; }
+        .activity-checklist { display: grid; gap: 8px; margin: 4px 0 16px; }
+        .check-item { display: flex; align-items: flex-start; gap: 9px; color: var(--muted); font-size: 12px; line-height: 1.45; cursor: pointer; }
+        .check-item input { width: 15px; height: 15px; flex: none; margin: 1px 0 0; accent-color: var(--green); cursor: pointer; }
+        .check-item.done span { opacity: .6; text-decoration: line-through; }
+        .check-type { margin-right: 5px; color: var(--green); font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .lesson-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .lesson-meta .activity-day { padding: 6px 10px; border-radius: 100px; background: #f3faf5; }
+        .activity-modal-body h3 { margin: 20px 0 8px; font-family: Georgia, serif; font-size: 17px; }
+        .activity-modal-body p { margin: 0 0 12px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+        .activity-modal-body ul { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+        .resource-links a { padding: 9px 14px; border-radius: 100px; background: var(--green); color: white; font-size: 12px; font-weight: 900; text-decoration: none; }
+        .resource-links a.secondary { border: 1px solid var(--green); background: white; color: var(--green); }
+
+        .day-nav { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+        .day-arrow { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--green); font-weight: 900; }
+        .day-arrow:hover { border-color: var(--green); }
+        .day-select { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 14px; border: 1px solid var(--line); border-radius: 100px; background: var(--card); color: var(--muted); font-size: 12px; font-weight: 800; }
+        .day-select select { max-width: 320px; border: 0; background: transparent; color: var(--ink); font-weight: 800; outline: none; cursor: pointer; }
+
+        .easy-panel { display: grid; grid-template-columns: 1.5fr .8fr 1fr; gap: 18px; margin-top: 18px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+        .easy-panel h3 { margin: 6px 0 8px; font-family: Georgia, serif; font-size: 19px; }
+        .easy-panel p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+        .word-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+        .word-chips span { padding: 6px 10px; border-radius: 100px; background: var(--lime); color: var(--ink); font-size: 11px; font-weight: 900; }
+        .read-link { display: inline-block; margin-top: 10px; color: var(--green); font-size: 12px; font-weight: 900; text-decoration: none; }
+        .read-link:hover { text-decoration: underline; }
+
+        .quiz-section { border-top: 1px solid var(--line); padding: 44px 0 70px; }
+        .quiz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .quiz-card { padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+        .quiz-source { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .quiz-source a { color: var(--green); text-decoration: none; }
+        .quiz-card h3 { margin: 10px 0 14px; font-family: Georgia, serif; font-size: 18px; line-height: 1.3; }
+        .quiz-options { display: grid; gap: 8px; }
+        .quiz-option { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); font-size: 13px; text-align: left; }
+        .quiz-option:hover:not(:disabled) { border-color: var(--green); }
+        .quiz-option.correct { border-color: var(--green); background: #eaf7ee; color: var(--green-dark); font-weight: 900; }
+        .quiz-option.wrong { border-color: var(--peach); background: #fff2ec; }
+        .quiz-option:disabled { cursor: default; }
+        .quiz-feedback { margin: 12px 0 0; padding: 10px 12px; border-radius: 12px; background: #f3faf5; color: var(--muted); font-size: 12px; line-height: 1.5; }
+        .quiz-score { color: var(--green); font-size: 13px; font-weight: 900; }
+
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 20px; padding: 40px 0; }
+            .grid, .video-grid, .quiz-grid { grid-template-columns: repeat(2, 1fr); }
+            .easy-panel { grid-template-columns: 1fr 1fr; }
+            .slide-area { grid-template-columns: 1fr; }
+            .slide-side { flex-direction: row; overflow-x: auto; }
+            .slide-thumb { min-width: 140px; }
+        }
+        @media (max-width: 620px) {
+            .shell { width: min(calc(100% - 24px), 1180px); }
+            header { height: auto; padding: 14px 0; }
+            nav { flex-wrap: wrap; gap: 12px; }
+            .nav-links { gap: 18px; }
+            .toolbar { align-items: flex-start; flex-direction: column; }
+            .grid, .video-grid, .activity-grid, .quiz-grid, .easy-panel { grid-template-columns: 1fr; }
+            .day-select select { max-width: 220px; }
+            .slide { padding: 20px; }
+            .modal { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="shell" aria-label="Main navigation">
+            <a class="brand" href="#top" aria-label="Watoto Tech Bridge home">
+                <span class="brand-mark">W<span style="color:var(--lime)">T</span></span>
+                <span class="brand-text"><strong>Watoto Tech Bridge</strong><span>Learn. Build. Lead.</span></span>
+            </a>
+            <div class="nav-links">
+                <a class="active" href="#library">Library</a>
+                <a href="#about">About</a>
+                <a href="#videos">Videos</a>
+                <a href="#activities">Daily plan</a>
+                <a href="#practice">Practice</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="top">
+        <section class="shell hero" id="about">
+            <div>
+                <span class="eyebrow">Young minds • Big ideas</span>
+                <h1>Code made clear.</h1>
+                <p>Friendly slide summaries that turn coding books into simple, practical lessons for the next generation of creators.</p>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+                <div class="orbit"></div>
+                <div class="hero-card"><small>Today’s lesson</small><div class="code-lines"><i></i><i></i><i></i></div></div>
+            </div>
+        </section>
+
+        <section class="library" id="library">
+            <div class="shell">
+                <div class="toolbar">
+                    <div><span class="eyebrow">Browse the collection</span><h2>Presentation library</h2></div>
+                    <label class="search-wrap"><input id="search" type="search" placeholder="Search a topic…" aria-label="Search presentations"><span aria-hidden="true">⌕</span></label>
+                </div>
+                <div class="filters" role="group" aria-label="Filter presentations">
+                    <button class="filter active" data-filter="All">All</button>
+                    <button class="filter" data-filter="Scratch">Scratch</button>
+                    <button class="filter" data-filter="Python">Python</button>
+                    <button class="filter" data-filter="Web">Web</button>
+                    <button class="filter" data-filter="Games">Games</button>
+                    <button class="filter" data-filter="Fundamentals">Fundamentals</button>
+                </div>
+                <div class="grid" id="deckGrid"></div>
+            </div>
+        </section>
+
+        <section class="video-section" id="videos">
+            <div class="shell">
+                <div class="toolbar">
+                    <div><span class="eyebrow">Watch and learn</span><h2>Educational videos</h2></div>
+                </div>
+                <div class="video-grid" id="videoGrid"></div>
+            </div>
+        </section>
+
+        <section class="activity-section" id="activities">
+            <div class="shell">
+                <div class="toolbar">
+                    <div><span class="eyebrow">One day at a time</span><h2>Today's teaching plan</h2></div>
+                    <div class="plan-summary">
+                        <span class="plan-chip">Starts <strong>Mon 23 Nov 2026</strong></span>
+                        <span id="planProgress">0 of 0 tasks done</span>
+                    </div>
+                </div>
+                <div class="day-nav">
+                    <button class="day-arrow" id="prevDay" aria-label="Previous teaching day">←</button>
+                    <label class="day-select"><span>Showing</span><select id="dayPicker" aria-label="Choose a teaching day"></select></label>
+                    <button class="day-arrow" id="nextDay" aria-label="Next teaching day">→</button>
+                    <button class="activity-btn" id="todayBtn">Jump to today</button>
+                </div>
+                <div class="activity-grid" id="activityGrid"></div>
+                <div class="easy-panel">
+                    <div>
+                        <span class="eyebrow">Easy learning notes</span>
+                        <h3>Explain it simply</h3>
+                        <p id="easyText"></p>
+                    </div>
+                    <div>
+                        <span class="eyebrow">Key words</span>
+                        <div class="word-chips" id="easyWords"></div>
+                    </div>
+                    <div>
+                        <span class="eyebrow">Read in the book</span>
+                        <div id="easyRead"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quiz-section" id="practice">
+            <div class="shell">
+                <div class="toolbar">
+                    <div><span class="eyebrow">Practice makes perfect</span><h2>Random daily questions</h2></div>
+                    <div class="plan-summary">
+                        <span class="quiz-score" id="quizScore">Score: 0 / 5</span>
+                        <button class="activity-btn" id="newQuestions">New questions</button>
+                    </div>
+                </div>
+                <div class="quiz-grid" id="quizGrid"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer><div class="shell"><span>Watoto Tech Bridge</span><span>Inspiring young builders through technology</span></div></footer>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
+        <div class="viewer">
+            <div class="viewer-bar"><strong id="viewerTitle">Presentation</strong><button class="close-btn" id="closeModal" aria-label="Close presentation">×</button></div>
+            <div class="slide-area">
+                <article class="slide" id="slide"></article>
+                <aside class="slide-side" id="slideThumbs" aria-label="Slides"></aside>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="activityModal" role="dialog" aria-modal="true" aria-labelledby="activityTitle">
+        <div class="viewer">
+            <div class="viewer-bar"><strong id="activityTitle">Activity Details</strong><button class="close-btn" id="closeActivityModal" aria-label="Close activity details">×</button></div>
+            <div class="activity-modal-body" id="activityModalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const decks = [
+            { title:"Coding for Kids", category:"Fundamentals", theme:"fundamentals", icon:"✦", slides:6, book:"CODING FOR KIDS - PYTHON AND SCRATCH.pdf", titles:["Overview","How programs work","The process","Test and fix mistakes","Your first script","Scratch concepts"], pages:[11,11,12,12,36,24], description:"Discover what code is, how computers follow instructions, and the habits of a great programmer.", points:["Computers follow precise instructions","Algorithms are step-by-step plans","Debugging is finding and fixing mistakes","Ideas become programs through practice"] },
+            { title:"Python in 3 Days", category:"Python", theme:"python", icon:"Py", slides:8, book:"Coding With Python for Kids Learn How to Use the Most Popular Programming Language in Just 3 Days Developing Simple Software… (Frank Nolte [Nolte, Frank]) (z-library.sk, 1lib.sk, z-lib.sk).pdf", titles:["Overview","Why learn Python","Variables","Strings and lists","Numbers and operators","Functions","Input and output","Guess game"], pages:[9,22,37,43,54,100,104,113], description:"A beginner-friendly path through variables, decisions, loops, and simple software projects.", points:["Values live in variables","Operators compare and calculate","Functions organize reusable code","Small projects make practice fun"] },
+            { title:"Python Programming for Kids", category:"Python", theme:"python", icon:"⌁", slides:7, book:"Python Programming for Kids Beginners Guide with Easy to Learn Activities to Unlock the Adventurous World of Python… (Simon Weber) (z-library.sk, 1lib.sk, z-lib.sk).pdf", titles:["Overview","What is an algorithm","Variables","Lists","Loops","Functions","Simple games"], pages:[11,11,22,37,66,79,104], description:"Learn core Python ideas through playful activities and small builds.", points:["Write clear, readable commands","Store and change information","Build with lists and loops","Create a project step by step"] },
+            { title:"Coding Games in Scratch", category:"Scratch", theme:"scratch", icon:"⚑", slides:8, book:"Coding Games in Scratch (Jon Woodcock) (z-library.sk, 1lib.sk, z-lib.sk).pdf", titles:["Overview","How coding works","Meet Scratch","Sprites and costumes","Scores with variables","Events start action","Broadcast messages","Remix a game"], pages:[20,20,24,28,44,27,68,208], description:"Turn blocks into games, add rules, respond to players, and keep improving your ideas.", points:["Sprites are characters and objects","Events start actions","Variables keep track of scores","Broadcast messages connect game parts"] },
+            { title:"Scratch Coding for Kids", category:"Scratch", theme:"scratch", icon:"◈", slides:7, book:"SCRATCH CODING FOR KIDS .pdf", titles:["Overview","Getting started","Basic blocks","If statements and lists","Loops","Move your sprite","Practice project"], pages:[7,12,27,34,59,68,106], description:"Create stories and animations by joining Scratch blocks into complete instructions.", points:["Start with motion and looks","Use events to trigger behavior","Repeat and remix your projects","Test with an audience"] },
+            { title:"Scratch Programming", category:"Scratch", theme:"scratch", icon:"◆", slides:6, book:"SCRATCH-PROGRAMMING.pdf", titles:["Overview","Sequence","Repeat blocks","Control scripts","Sensing","Block reference"], pages:[19,29,58,45,91,152], description:"A visual introduction to sequencing, control, events, and logical thinking.", points:["A sequence gives an exact order","Controls decide what happens next","Sensing lets projects react","Data gives characters a memory"] },
+            { title:"HTML & CSS Easy Start", category:"Web", theme:"web", icon:"<> ".trim(), slides:9, book:"HTML-CSS-EASY START.pdf", titles:["Overview","Page structure","Text","Lists","Links","Images","Forms","Introducing CSS","Colour and layout"], pages:[19,19,47,69,81,101,151,233,253], description:"Understand the building blocks of web pages and style them for every screen.", points:["HTML gives a page structure","CSS controls color and layout","Classes apply reusable styles","Responsive design adapts to devices"] },
+            { title:"Teach Your Kids to Code", category:"Fundamentals", theme:"fundamentals", icon:"☀", slides:8, book:"Teach Your Kids to Code (Stuart Andrews) (z-library.sk, 1lib.sk, z-lib.sk).pdf", titles:["Overview","Start with Python","Break problems down","Look for patterns","Make predictions","Loops and repeats","Functions","Share your project"], pages:[9,10,23,39,55,71,87,119], description:"Build confidence with problem solving, creative coding, and projects for curious minds.", points:["Break a big problem into small parts","Look for patterns","Make predictions and test them","Share and improve projects"] }
+        ];
+
+        const videos = [
+            { title:"Coding for Kids", category:"Fundamentals", file:"Coding_for_Kids__What_is_coding_for_kids____Coding_for_beginners__Understanding_Coding__Coding_Words(1080p).mp4", description:"Learn what coding is and discover common coding words." },
+            { title:"Types of Coding", category:"Fundamentals", file:"Coding_for_Kids__What_is_coding_for_kids____Coding_for_beginners___Types_of_Coding__Coding_Languages(1080p).mp4", description:"Explore different types of coding and programming languages." },
+            { title:"How Algorithms Work", category:"Fundamentals", file:"I_Wonder_What_Is_an_Algorithm___Algorithm_Facts_for_Kids___Fun_Facts_about_Algorithms_#algorithm(1080p).mp4", description:"Fun facts that explain algorithms for young learners." },
+            { title:"Programming Basics", category:"Python", file:"PROGRAMMING_for_kids_👦_Basic_concepts_💻_Part_1(1080p).mp4", description:"An introduction to basic programming concepts for kids." },
+            { title:"Block-Based Coding", category:"Scratch", file:"What_is_Block_Based_Coding___Coding_for_Kids___Block_Coding_for_Kids___What_is_Coding___Kids_Coding(1080p).mp4", description:"Discover block coding and how it helps kids learn programming." }
+        ];
+
+        const sourceBooks = {
+            codingKids: { title:"Coding for Kids - Python and Scratch", file:"CODING FOR KIDS - PYTHON AND SCRATCH.pdf" },
+            python3: { title:"Coding With Python for Kids (3 Days)", file:"Coding With Python for Kids Learn How to Use the Most Popular Programming Language in Just 3 Days Developing Simple Software… (Frank Nolte [Nolte, Frank]) (z-library.sk, 1lib.sk, z-lib.sk).pdf" },
+            pythonActivities: { title:"Python Programming for Kids", file:"Python Programming for Kids Beginners Guide with Easy to Learn Activities to Unlock the Adventurous World of Python… (Simon Weber) (z-library.sk, 1lib.sk, z-lib.sk).pdf" },
+            scratchGames: { title:"Coding Games in Scratch", file:"Coding Games in Scratch (Jon Woodcock) (z-library.sk, 1lib.sk, z-lib.sk).pdf" },
+            scratchKids: { title:"Scratch Coding for Kids", file:"SCRATCH CODING FOR KIDS .pdf" },
+            scratchProgramming: { title:"Scratch Programming", file:"SCRATCH-PROGRAMMING.pdf" },
+            web: { title:"HTML & CSS Easy Start", file:"HTML-CSS-EASY START.pdf" },
+            teachKids: { title:"Teach Your Kids to Code", file:"Teach Your Kids to Code (Stuart Andrews) (z-library.sk, 1lib.sk, z-lib.sk).pdf" }
+        };
+
+        const sourceVideos = {
+            codingKids: { title:"Coding for Kids", file:"Coding_for_Kids__What_is_coding_for_kids____Coding_for_beginners__Understanding_Coding__Coding_Words(1080p).mp4" },
+            types: { title:"Types of Coding", file:"Coding_for_Kids__What_is_coding_for_kids____Coding_for_beginners___Types_of_Coding__Coding_Languages(1080p).mp4" },
+            algorithms: { title:"How Algorithms Work", file:"I_Wonder_What_Is_an_Algorithm___Algorithm_Facts_for_Kids___Fun_Facts_about_Algorithms_#algorithm(1080p).mp4" },
+            basics: { title:"Programming Basics", file:"PROGRAMMING_for_kids_👦_Basic_concepts_💻_Part_1(1080p).mp4" },
+            block: { title:"Block-Based Coding", file:"What_is_Block_Based_Coding___Coding_for_Kids___Block_Coding_for_Kids___What_is_Coding___Kids_Coding(1080p).mp4" }
+        };
+
+        const lessons = [
+            {
+                date:"2026-11-23", label:"Mon 23 Nov 2026", week:1, title:"Orientation and problem discovery",
+                category:"Fundamentals",
+                focus:"Introduce the innovation challenge, teamwork and responsible technology. Assess prior coding and web skills and explain problem, user and solution.",
+                classWork:"Explore everyday problems at school, home and in the community; select a broad challenge area and map who is affected.",
+                output:"Problem list, baseline record and team agreements.",
+                home:"Observe one everyday problem and describe who experiences it.",
+                books:["teachKids","codingKids"], videos:["codingKids"],
+                fromBooks:[["Teach Your Kids to Code","Break a big problem into small parts"],["Coding for Kids","Ideas become programs through practice"]],
+                tasks:[["class","Explore problems at school, home and in the community"],["class","Choose a challenge area and list who is affected"],["home","Observe one everyday problem and describe who experiences it"]]
+            },
+            {
+                date:"2026-11-24", label:"Tue 24 Nov 2026", week:1, title:"Computational thinking: decomposition and patterns",
+                category:"Fundamentals",
+                focus:"Teach decomposition, pattern recognition, abstraction and algorithms with unplugged examples.",
+                classWork:"Break a familiar task into smaller steps, identify patterns and remove unnecessary details.",
+                output:"An algorithm or flowchart for a familiar task.",
+                home:"Write step-by-step instructions for a daily routine.",
+                books:["teachKids","codingKids"], videos:["algorithms"],
+                fromBooks:[["Teach Your Kids to Code","Look for patterns"],["Coding for Kids","Algorithms are step-by-step plans"]],
+                tasks:[["class","Break a familiar task into small steps"],["class","Spot the patterns and remove unnecessary details"],["home","Write step-by-step instructions for a daily routine"]]
+            },
+            {
+                date:"2026-11-25", label:"Wed 25 Nov 2026", week:1, title:"Algorithms, flowcharts and logic",
+                category:"Fundamentals",
+                focus:"Teach sequence, decision, repetition, input and output, flowchart symbols, and how to trace an algorithm.",
+                classWork:"Create flowcharts for a quiz, decision process or everyday problem and trace sample algorithms.",
+                output:"A flowchart and a traced solution.",
+                home:"Identify one decision and one repeated action in an everyday process.",
+                books:["codingKids","scratchProgramming"], videos:["algorithms"],
+                fromBooks:[["Coding for Kids","Computers follow precise instructions"],["Scratch Programming","A sequence gives an exact order"]],
+                tasks:[["class","Draw a flowchart for a quiz or everyday problem"],["class","Trace an algorithm step by step"],["home","Find one decision and one repeated action in a daily process"]]
+            },
+            {
+                date:"2026-11-26", label:"Thu 26 Nov 2026", week:1, title:"Coding fundamentals: sequence and variables",
+                category:"Scratch",
+                focus:"Introduce a beginner-friendly environment such as Scratch: sprites, events, ordered instructions and variables.",
+                classWork:"Build a short program, story or animation with ordered instructions and change a variable such as score or count.",
+                output:"A first working coded artefact.",
+                home:"Plan a simple interactive idea with a sketch or pseudocode.",
+                books:["scratchKids","scratchGames"], videos:["block"],
+                fromBooks:[["Scratch Coding for Kids","Start with motion and looks"],["Coding Games in Scratch","Variables keep track of scores"]],
+                tasks:[["class","Build a short story or animation with ordered blocks"],["class","Add and change a score or count variable"],["home","Sketch or write pseudocode for an interactive idea"]]
+            },
+            {
+                date:"2026-11-27", label:"Fri 27 Nov 2026", week:1, title:"Coding: events, conditions and debugging",
+                category:"Scratch",
+                focus:"Teach event handling, if/else conditions, testing and debugging; introduce loops if learners are ready.",
+                classWork:"Create a simple interactive quiz or decision game, test different inputs and fix errors.",
+                output:"An interactive mini-program and debugging notes.",
+                home:"Write down one bug found and how it was fixed.",
+                books:["scratchGames","codingKids","scratchProgramming"], videos:["block","basics"],
+                fromBooks:[["Coding Games in Scratch","Events start actions"],["Coding for Kids","Debugging is finding and fixing mistakes"]],
+                tasks:[["class","Build an interactive quiz or decision game"],["class","Test inputs, fix errors and note the bugs"],["home","Explain one bug and its fix in your notebook"]]
+            },
+            {
+                date:"2026-11-30", label:"Mon 30 Nov 2026", week:2, title:"Web workflow and HTML5 structure",
+                category:"Web",
+                focus:"Explain the browser, web page, HTML, CSS and JavaScript roles; create project folders and a valid HTML document.",
+                classWork:"Create a project webpage with semantic structure, headings, paragraphs and sections.",
+                output:"A structured HTML page.",
+                home:"Sketch a homepage for the team's solution.",
+                books:["web"], videos:["types"],
+                fromBooks:[["HTML & CSS Easy Start","HTML gives a page structure"]],
+                tasks:[["class","Set up the project folder and HTML document"],["class","Add headings, paragraphs and sections"],["home","Sketch a homepage for the team solution"]]
+            },
+            {
+                date:"2026-12-01", label:"Tue 1 Dec 2026", week:2, title:"HTML: links, images, lists and forms",
+                category:"Web",
+                focus:"Teach navigation links, images, lists and form controls, plus labels, meaningful alt text and safe input handling.",
+                classWork:"Build a multi-section page with navigation and a simple form mock-up; never collect real sensitive data.",
+                output:"An HTML page with navigation and form elements.",
+                home:"Review page content and check all asset files are organised.",
+                books:["web"],
+                fromBooks:[["HTML & CSS Easy Start","HTML gives a page structure"],["HTML & CSS Easy Start","Classes apply reusable styles"]],
+                tasks:[["class","Add navigation, images, lists and a form mock-up"],["class","Write clear labels and meaningful alt text"],["home","Check page content and organise asset files"]]
+            },
+            {
+                date:"2026-12-02", label:"Wed 2 Dec 2026", week:2, title:"CSS: layout and visual design",
+                category:"Web",
+                focus:"Teach selectors, properties, colours, typography, spacing, the box model and responsive design.",
+                classWork:"Style the webpage with consistent colours, readable text and a layout that adapts to screen size.",
+                output:"A styled webpage.",
+                home:"Identify two improvements for mobile readability.",
+                books:["web"],
+                fromBooks:[["HTML & CSS Easy Start","CSS controls color and layout"],["HTML & CSS Easy Start","Responsive design adapts to devices"]],
+                tasks:[["class","Style the page with consistent colours and readable text"],["class","Make the layout adapt to different screen sizes"],["home","List two mobile readability improvements"]]
+            },
+            {
+                date:"2026-12-03", label:"Thu 3 Dec 2026", week:2, title:"JavaScript: interactivity fundamentals",
+                category:"Web",
+                focus:"Introduce variables, data types, operators, functions, events and DOM interaction at an age-appropriate level.",
+                classWork:"Add a button interaction, simple calculator, quiz response or show/hide feature to the webpage.",
+                output:"A webpage with at least one working interaction.",
+                home:"Write pseudocode for another interaction.",
+                books:["python3","web"], videos:["basics"],
+                fromBooks:[["Coding With Python for Kids","Values live in variables"],["Coding With Python for Kids","Conditions help programs make choices"],["Coding With Python for Kids","Functions organize reusable code"]],
+                tasks:[["class","Add one working interaction to the webpage"],["class","Test the interaction with different inputs"],["home","Write pseudocode for a second interaction"]]
+            },
+            {
+                date:"2026-12-04", label:"Fri 4 Dec 2026", week:2, title:"Testing, debugging and user experience",
+                category:"Web",
+                focus:"Teach test cases, expected and actual results, debugging, navigation checks, accessibility and user feedback.",
+                classWork:"Peer-test each other's webpages with a checklist, fix at least two issues and record the results.",
+                output:"A tested webpage and a test log.",
+                home:"Ask a potential user what is clear or confusing about the project.",
+                books:["codingKids","teachKids"],
+                fromBooks:[["Coding for Kids","Debugging is finding and fixing mistakes"],["Teach Your Kids to Code","Make predictions and test them"]],
+                tasks:[["class","Peer-test a webpage using a checklist"],["class","Fix two issues and record expected/actual results"],["home","Ask one user what is clear or confusing"]]
+            },
+            {
+                date:"2026-12-07", label:"Mon 7 Dec 2026", week:3, title:"Creative technology and rapid prototyping",
+                category:"Fundamentals",
+                focus:"Introduce design thinking: empathise, define, ideate, prototype and test. Discuss low-cost prototypes and ethical design.",
+                classWork:"Interview or role-play a user, define a specific problem and sketch at least three possible solutions.",
+                output:"A user need statement and solution sketches.",
+                home:"Observe or ask about one user need relevant to the challenge.",
+                books:["teachKids","codingKids"],
+                fromBooks:[["Teach Your Kids to Code","Break a big problem into small parts"],["Teach Your Kids to Code","Share and improve projects"]],
+                tasks:[["class","Interview a user and write a need statement"],["class","Sketch at least three possible solutions"],["home","Observe one real user need"]]
+            },
+            {
+                date:"2026-12-08", label:"Tue 8 Dec 2026", week:3, title:"Applied AI: concepts, opportunities and limits",
+                category:"Fundamentals",
+                focus:"Explain machine learning simply with examples of data, patterns, outputs, bias, errors and human oversight.",
+                classWork:"Analyse example AI use cases; identify input, output, benefit, risk and where human review is needed.",
+                output:"An AI use-case analysis.",
+                home:"Identify a project task AI might assist with and one needing human judgement.",
+                books:["teachKids"], videos:["algorithms"],
+                fromBooks:[["Teach Your Kids to Code","Look for patterns"],["Teach Your Kids to Code","Make predictions and test them"]],
+                tasks:[["class","Analyse an AI use case: input, output, benefit and risk"],["class","Mark where a human must review the result"],["home","List one AI-assisted task and one human judgement task"]]
+            },
+            {
+                date:"2026-12-09", label:"Wed 9 Dec 2026", week:3, title:"Responsible applied AI and tool-assisted work",
+                category:"Fundamentals",
+                focus:"Teach safe prompting, verification, privacy, fairness, attribution and age-appropriate tool use; never upload personal data.",
+                classWork:"With trainer guidance, use an approved AI tool to brainstorm or explain a concept, then verify and revise the output.",
+                output:"A responsible AI use record with verification notes.",
+                home:"Check project facts using reliable non-AI sources.",
+                books:["teachKids"],
+                fromBooks:[["Teach Your Kids to Code","Make predictions and test them"],["Teach Your Kids to Code","Share and improve projects"]],
+                tasks:[["class","Use an approved AI tool with guidance"],["class","Verify and revise the output; record the checks"],["home","Check project facts with reliable non-AI sources"]]
+            },
+            {
+                date:"2026-12-10", label:"Thu 10 Dec 2026", week:3, title:"Innovation challenge: solution architecture",
+                category:"Scratch",
+                focus:"Describe users, features, inputs, outputs, workflow and constraints; consider feasibility and safety.",
+                classWork:"Create a simple system map or storyboard and define essential and optional features.",
+                output:"A solution design or architecture diagram.",
+                home:"Prepare a list of materials, content and tasks required.",
+                books:["scratchGames","scratchProgramming"],
+                fromBooks:[["Coding Games in Scratch","Broadcast messages connect game parts"],["Scratch Programming","Data gives characters a memory"]],
+                tasks:[["class","Draw a system map or storyboard of the solution"],["class","Label essential and optional features"],["home","List materials, content and tasks needed"]]
+            },
+            {
+                date:"2026-12-11", label:"Fri 11 Dec 2026", week:3, title:"Collaborative planning and prototype review",
+                category:"Fundamentals",
+                focus:"Teach roles, task allocation, communication, version naming and constructive feedback; review the prototype against user need.",
+                classWork:"Teams present their prototype plan; peers and trainer give feedback and the scope is revised to fit the remaining days.",
+                output:"An approved project scope, team roles and prototype plan.",
+                home:"Complete assigned research or content preparation with adult guidance.",
+                books:["teachKids"],
+                fromBooks:[["Teach Your Kids to Code","Share and improve projects"],["Teach Your Kids to Code","Break a big problem into small parts"]],
+                tasks:[["class","Present the prototype plan to peers and trainer"],["class","Use feedback to revise the project scope"],["home","Finish assigned research with adult guidance"]]
+            },
+            {
+                date:"2026-12-14", label:"Mon 14 Dec 2026", week:4, title:"Project development sprint 1",
+                category:"Games",
+                focus:"Review project goals and acceptance criteria; guide coding, web development or prototype construction with small milestones.",
+                classWork:"Build the core feature or minimum viable prototype, keep a progress log and save versions.",
+                output:"A working core prototype.",
+                home:"Prepare a short progress update and list any blockers.",
+                books:["scratchGames","web","codingKids"],
+                fromBooks:[["Coding Games in Scratch","Variables keep track of scores"],["HTML & CSS Easy Start","HTML gives a page structure"]],
+                tasks:[["class","Build the core feature or minimum viable prototype"],["class","Keep a progress log and save a version"],["home","Write a progress update and any blockers"]]
+            },
+            {
+                date:"2026-12-15", label:"Tue 15 Dec 2026", week:4, title:"Project development sprint 2 and testing",
+                category:"Games",
+                focus:"Guide completion of remaining features and test functionality, usability, content accuracy and safe behaviour.",
+                classWork:"Complete the prototype, run test cases, fix priority issues and capture screenshots or evidence.",
+                output:"An improved working prototype and test evidence.",
+                home:"Practise explaining how the solution works.",
+                books:["codingKids","teachKids"],
+                fromBooks:[["Coding for Kids","Debugging is finding and fixing mistakes"],["Teach Your Kids to Code","Make predictions and test them"]],
+                tasks:[["class","Finish the remaining features"],["class","Run test cases, fix issues and capture evidence"],["home","Practise explaining how the solution works"]]
+            },
+            {
+                date:"2026-12-16", label:"Wed 16 Dec 2026", week:4, title:"Digital entrepreneurship and business innovation",
+                category:"Fundamentals",
+                focus:"Teach problem and customer fit, value proposition, a simple business model, costs, ethical marketing and social impact.",
+                classWork:"Create a one-page business or innovation canvas: user, problem, solution, value and delivery approach.",
+                output:"A business or innovation canvas.",
+                home:"Ask for feedback on the value of the proposed solution.",
+                books:["teachKids"],
+                fromBooks:[["Teach Your Kids to Code","Share and improve projects"],["Teach Your Kids to Code","Break a big problem into small parts"]],
+                tasks:[["class","Complete the one-page innovation canvas"],["class","Explain the value and delivery approach"],["home","Ask someone for feedback on the solution's value"]]
+            },
+            {
+                date:"2026-12-17", label:"Thu 17 Dec 2026", week:4, title:"Professional presentation and project storytelling",
+                category:"Fundamentals",
+                focus:"Teach presentation structure: problem, user, solution, demonstration, impact, limitations and next steps; practise clear speaking.",
+                classWork:"Prepare slides, poster or demo; rehearse the pitch; give every team member a role and ready the prototype.",
+                output:"A pitch deck or poster and a rehearsed demonstration.",
+                home:"Practise a 2-3 minute pitch and prepare answers to likely questions.",
+                books:["teachKids"], videos:["codingKids"],
+                fromBooks:[["Teach Your Kids to Code","Share and improve projects"]],
+                tasks:[["class","Prepare the slides, poster or demo"],["class","Rehearse the pitch with a role for each member"],["home","Practise a 2-3 minute pitch and likely questions"]]
+            },
+            {
+                date:"2026-12-18", label:"Fri 18 Dec 2026", week:4, title:"Final testing, presentation and reflection",
+                category:"Fundamentals",
+                focus:"Conduct final checks and assess coding, problem solving, web functionality, creativity, responsible AI, teamwork and business communication.",
+                classWork:"Give the final project demonstration and pitch, answer peer questions, and complete reflection and trainer assessment.",
+                output:"A completed innovation project, pitch and assessment record.",
+                home:"Prepare the project for Saturday's exhibition.",
+                books:["codingKids","teachKids","web"],
+                fromBooks:[["Coding for Kids","Debugging is finding and fixing mistakes"],["Teach Your Kids to Code","Share and improve projects"]],
+                tasks:[["class","Run final checks on the project and prototype"],["class","Present the pitch and complete the reflection"],["home","Prepare the project for the exhibition"]]
+            },
+            {
+                date:"2026-12-19", label:"Sat 19 Dec 2026", week:"Showcase", title:"Academy showcase and final assessment",
+                category:"Fundamentals",
+                focus:"Welcome parents and learners, demonstrate Level 1, 2 and 3 work, collect feedback, recognise effort and take photos only with consent.",
+                classWork:"Teams demonstrate their coded or web prototype, explain the problem and solution, and deliver a short pitch for visitors.",
+                output:"A working prototype, test evidence, pitch, parent feedback and certificates.",
+                home:"No homework - share what you built with your family.",
+                books:["codingKids","teachKids","web"], videos:["codingKids"],
+                fromBooks:[["Coding for Kids","Ideas become programs through practice"],["Teach Your Kids to Code","Share and improve projects"]],
+                tasks:[["class","Set up the display and final prototype checks"],["class","Demonstrate the project and deliver the pitch"],["home","Share the project with family and keep the folder safe"]]
+            }
+        ];
+
+        const lessonExtras = [
+            { easy:"A problem is something that is hard or annoying. Ask who has the problem, then think of a helpful idea. A user is the person you want to help.", words:["problem","user","solution","team"], read:["teachKids",9,"Start with Python and problem solving"], topics:["thinking"] },
+            { easy:"Big jobs feel smaller when we cut them into steps. Look for steps that repeat and leave out tiny details that do not matter.", words:["decomposition","pattern","steps","algorithm"], read:["teachKids",23,"Break problems into parts"], topics:["thinking"] },
+            { easy:"A flowchart is a map of choices. A diamond asks a question, arrows show the order, and a loop repeats a step.", words:["flowchart","sequence","decision","loop"], read:["codingKids",12,"The process"], topics:["thinking"] },
+            { easy:"In Scratch, blocks snap together to give orders. A sprite follows them in order, and a variable is like a labelled box for a number.", words:["sprite","block","sequence","variable"], read:["scratchKids",27,"Basic Scratch blocks"], topics:["scratch"] },
+            { easy:"Events wake up your code. An if block asks a question: if it is true, do something; if not, try another path. Bugs are clues, not failures.", words:["event","if/else","debug","test"], read:["codingKids",12,"Test and fix mistakes"], topics:["scratch","thinking"] },
+            { easy:"HTML gives a page its bones: headings, paragraphs and sections. Put your files in one folder so the browser can find them.", words:["HTML","browser","heading","section"], read:["web",19,"Page structure"], topics:["web"] },
+            { easy:"Links move people around a page. Images need alt words so everyone knows what they show. Forms let users type information.", words:["link","image","alt text","form"], read:["web",81,"Links"], topics:["web"] },
+            { easy:"CSS is the paint and clothes for a page. Colours, spacing and boxes make it easy to read on a phone or a computer.", words:["CSS","colour","box model","responsive"], read:["web",233,"Introducing CSS"], topics:["web"] },
+            { easy:"A variable remembers a value. Conditions ask questions, functions pack steps into a reusable team, and the browser runs your JavaScript.", words:["variable","condition","function","browser"], read:["web",168,"Event handling"], topics:["python","web"] },
+            { easy:"A test is a question you ask your page: did it do what I expected? If not, find the bug, fix it and write down what happened.", words:["test case","expected","actual","fix"], read:["codingKids",12,"Test and fix mistakes"], topics:["thinking","web","project"] },
+            { easy:"Design means caring about the user. Ask them what they need, imagine three ideas, build a quick model, then ask again.", words:["empathise","ideate","prototype","test"], read:["teachKids",39,"Patterns and ideas"], topics:["project","thinking"] },
+            { easy:"AI learns patterns from examples. It can help, but it can also be wrong or unfair, so a human must check the answer.", words:["AI","data","pattern","bias"], read:["teachKids",55,"Make predictions"], topics:["ai","thinking"] },
+            { easy:"Never share private information with a tool. Ask clearly, check the answer with a reliable source, and say which help you used.", words:["prompt","verify","privacy","attribution"], read:["teachKids",55,"Check your predictions"], topics:["ai"] },
+            { easy:"A solution map shows who uses your project, what goes in, what comes out and what steps connect them.", words:["user","input","output","workflow"], read:["scratchGames",68,"Broadcast messages"], topics:["scratch","project"] },
+            { easy:"Teams work best when everyone knows their job. Give kind feedback, name your file versions and change the plan when you learn something.", words:["roles","feedback","version","scope"], read:["teachKids",119,"Share and improve"], topics:["project"] },
+            { easy:"Build the smallest useful version first. Save your work, write a progress note, and add features one at a time.", words:["prototype","milestone","save","progress"], read:["scratchGames",44,"Scores with variables"], topics:["scratch","web","python"] },
+            { easy:"A finished project still needs checks. Try every button, ask a friend to use it, fix the biggest problems and keep proof.", words:["test","usability","fix","evidence"], read:["codingKids",12,"Test and fix mistakes"], topics:["thinking","python","scratch"] },
+            { easy:"A good idea needs a user, a problem and a clear value. Explain who it helps and how it will reach them.", words:["user","problem","value","canvas"], read:["teachKids",119,"Share and improve"], topics:["project"] },
+            { easy:"Tell the story in order: the problem, the person, your solution, a demo, the impact and what you would do next.", words:["story","problem","demo","impact"], read:["teachKids",119,"Share your project"], topics:["project"] },
+            { easy:"Show what works, say what you learnt and listen to questions. Reflection helps you become a better builder.", words:["demo","pitch","reflect","assess"], read:["codingKids",12,"Test and fix mistakes"], topics:["project","thinking"] },
+            { easy:"Today you share your work. Smile, explain clearly, show the prototype and thank visitors for their ideas.", words:["showcase","demo","feedback","celebrate"], read:["teachKids",119,"Share and improve"], topics:["project"] }
+        ];
+
+        const questionBank = [
+            { text:"What is an algorithm?", options:["A step-by-step plan","A kind of computer","A drawing program","A secret password"], answer:0, why:"An algorithm is a clear list of steps that solves a problem.", book:"teachKids", page:10, topics:["thinking"] },
+            { text:"What does decomposition mean?", options:["Breaking a big task into smaller parts","Deleting all your work","Making a page colourful","Repeating one block forever"], answer:0, why:"Decomposition means splitting a big problem into smaller, easier jobs.", book:"teachKids", page:23, topics:["thinking"] },
+            { text:"Which flowchart shape asks a yes/no question?", options:["Diamond","Circle","Star","Cloud"], answer:0, why:"A diamond shows a decision in a flowchart.", book:"codingKids", page:12, topics:["thinking"] },
+            { text:"What does a loop do?", options:["Repeats instructions","Stores a number","Draws a picture","Closes the program"], answer:0, why:"A loop runs the same steps again and again.", book:"scratchProgramming", page:58, topics:["thinking","scratch"] },
+            { text:"What is debugging?", options:["Finding and fixing mistakes","Hiding your code","Making a game harder","Deleting the internet"], answer:0, why:"Debugging means finding a mistake and fixing it.", book:"codingKids", page:12, topics:["thinking"] },
+            { text:"Which of these is a pattern?", options:["2, 4, 6, 8","A red apple","A loud noise","A closed door"], answer:0, why:"A pattern repeats in a predictable way.", book:"teachKids", page:39, topics:["thinking"] },
+            { text:"In a flowchart, arrows show...", options:["The order of steps","The colour of the page","The user's name","The price"], answer:0, why:"Arrows show the flow from one step to the next.", book:"codingKids", page:12, topics:["thinking"] },
+            { text:"What comes after input in a simple program?", options:["Processing, then output","Sleeping","Deleting data","Nothing"], answer:0, why:"A program takes an input, processes it and gives an output.", book:"codingKids", page:11, topics:["thinking"] },
+            { text:"A recipe says 'stir 10 times'. This is...", options:["Repetition","A variable","A sprite","A password"], answer:0, why:"Repeating an action is called repetition or a loop.", book:"scratchProgramming", page:58, topics:["thinking"] },
+            { text:"Why remove tiny details when solving a problem?", options:["To focus on what matters","To make it longer","To confuse the user","To add more colours"], answer:0, why:"Ignoring small details is abstraction: it keeps the important parts.", book:"teachKids", page:23, topics:["thinking"] },
+            { text:"What is a sprite?", options:["A character or object","A type of keyboard","A web browser","A file folder"], answer:0, why:"A sprite is a character or object in a Scratch project.", book:"scratchKids", page:27, topics:["scratch"] },
+            { text:"Which event often starts a Scratch script?", options:["Green flag clicked","Typing a password","Closing the laptop","Unplugging the mouse"], answer:0, why:"The green flag is a common event that starts scripts.", book:"scratchGames", page:27, topics:["scratch"] },
+            { text:"What does the forever block do?", options:["Repeats forever","Stops the program","Adds a sprite","Changes the colour"], answer:0, why:"The forever block keeps repeating its instructions.", book:"scratchProgramming", page:58, topics:["scratch"] },
+            { text:"How do you keep score in a game?", options:["Use a variable","Use a costume","Use a sound","Use a link"], answer:0, why:"A variable can store and change a score.", book:"scratchGames", page:44, topics:["scratch"] },
+            { text:"What does broadcast do?", options:["Sends a message to other sprites","Turns off the computer","Deletes a variable","Makes a new page"], answer:0, why:"Broadcast sends a message that other sprites can react to.", book:"scratchGames", page:68, topics:["scratch"] },
+            { text:"Which blocks move a sprite?", options:["Motion blocks","Sound blocks","Data blocks","Web blocks"], answer:0, why:"Motion blocks control how a sprite moves.", book:"scratchKids", page:68, topics:["scratch"] },
+            { text:"What does an if-then block do?", options:["Runs code only when a condition is true","Always stops the game","Changes the background","Saves the file"], answer:0, why:"An if block runs its code when the condition is true.", book:"scratchKids", page:34, topics:["scratch"] },
+            { text:"What is a costume in Scratch?", options:["A look or picture for a sprite","A game score","A computer part","A password"], answer:0, why:"Costumes are the different looks a sprite can wear.", book:"scratchGames", page:28, topics:["scratch"] },
+            { text:"What does the wait block do?", options:["Pauses the script","Makes a new sprite","Adds points forever","Closes the project"], answer:0, why:"The wait block pauses the script for a moment.", book:"scratchProgramming", page:58, topics:["scratch"] },
+            { text:"Why test a game with different inputs?", options:["To find bugs and make it fair","To make it shorter","To hide errors","To change the title"], answer:0, why:"Different inputs can reveal bugs you did not expect.", book:"scratchGames", page:52, topics:["scratch"] },
+            { text:"What is a variable?", options:["A named box that stores a value","A kind of snake","A computer screen","A game controller"], answer:0, why:"A variable is a name that stores a value your program can use.", book:"python3", page:37, topics:["python"] },
+            { text:"Which is a good variable name?", options:["score","2score","my score","!score"], answer:0, why:"Variable names can use letters, numbers and underscores, but cannot start with a number.", book:"pythonActivities", page:26, topics:["python"] },
+            { text:"What does score = 5 do in Python?", options:["Stores 5 in score","Deletes score","Asks a question","Prints the answer"], answer:0, why:"The equals sign assigns the value 5 to the variable score.", book:"python3", page:54, topics:["python"] },
+            { text:"What type of value is 7?", options:["Integer","String","Picture","Sprite"], answer:0, why:"A whole number like 7 is an integer.", book:"python3", page:34, topics:["python"] },
+            { text:"What type of value is Hello in quotes?", options:["String","Integer","Boolean","List"], answer:0, why:"Text inside quotes is a string.", book:"python3", page:43, topics:["python"] },
+            { text:"What does + do with two numbers?", options:["Adds them","Subtracts them","Compares them","Deletes them"], answer:0, why:"The plus sign adds numbers together.", book:"python3", page:54, topics:["python"] },
+            { text:"What does a list hold?", options:["Many values in order","Only one number","Only pictures","Nothing"], answer:0, why:"A list stores several values in a particular order.", book:"pythonActivities", page:37, topics:["python"] },
+            { text:"Which word starts a decision in Python?", options:["if","loop","print","sprite"], answer:0, why:"An if statement asks a question and runs code when it is true.", book:"pythonActivities", page:53, topics:["python"] },
+            { text:"What does for i in range(3) do?", options:["Repeats three times","Stops after one step","Makes three variables","Prints three words"], answer:0, why:"range(3) gives three values, so the loop runs three times.", book:"pythonActivities", page:66, topics:["python"] },
+            { text:"What is a function?", options:["A reusable block of code","A broken variable","A type of list","A computer mouse"], answer:0, why:"A function groups steps so you can use them again.", book:"python3", page:100, topics:["python"] },
+            { text:"What does HTML do?", options:["Gives a page structure","Makes it colourful","Runs games","Stores passwords"], answer:0, why:"HTML describes the structure and content of a page.", book:"web", page:19, topics:["web"] },
+            { text:"What does CSS do?", options:["Controls colours and layout","Writes the words","Sends emails","Deletes files"], answer:0, why:"CSS styles the page: colours, fonts, spacing and layout.", book:"web", page:233, topics:["web"] },
+            { text:"Which tag is the main heading?", options:["h1","p","img","li"], answer:0, why:"The h1 tag is the most important heading on a page.", book:"web", page:47, topics:["web"] },
+            { text:"What does an a tag make?", options:["A link","A table","A picture","A button that deletes"], answer:0, why:"The anchor tag a creates a hyperlink.", book:"web", page:81, topics:["web"] },
+            { text:"What should alt text describe?", options:["What an image shows","The website colour","The author's age","The file size"], answer:0, why:"Alt text describes an image for people who cannot see it.", book:"web", page:101, topics:["web"] },
+            { text:"What does a form let a user do?", options:["Enter information","Watch a video","Change the clock","Install software"], answer:0, why:"Forms collect information from users.", book:"web", page:151, topics:["web"] },
+            { text:"Which CSS property changes text colour?", options:["color","font","link","image"], answer:0, why:"The color property sets the colour of text.", book:"web", page:253, topics:["web"] },
+            { text:"What does responsive design mean?", options:["It works on different screen sizes","It uses only one colour","It needs no HTML","It always uses the internet"], answer:0, why:"Responsive pages adapt to phones, tablets and computers.", book:"web", page:386, topics:["web"] },
+            { text:"What is a CSS class?", options:["A reusable style label","A type of computer","A webpage file","A game score"], answer:0, why:"A class lets you apply the same style to many elements.", book:"web", page:233, topics:["web"] },
+            { text:"Which part runs JavaScript on a webpage?", options:["The browser","The keyboard","The printer","The folder"], answer:0, why:"The browser reads and runs JavaScript in the page.", book:"web", page:163, topics:["web"] },
+            { text:"What is a prototype?", options:["A simple early version","A final exam","A computer virus","A secret code"], answer:0, why:"A prototype is a quick early version you can test and improve.", book:"teachKids", page:87, topics:["project"] },
+            { text:"What should you do first with a big problem?", options:["Break it into smaller parts","Guess the answer","Ignore the user","Buy a new computer"], answer:0, why:"Decomposition makes a big problem easier to solve.", book:"teachKids", page:23, topics:["project","thinking"] },
+            { text:"Why ask a user for feedback?", options:["To improve the solution","To make it more confusing","To avoid testing","To add more bugs"], answer:0, why:"Feedback tells you what works and what needs fixing.", book:"teachKids", page:119, topics:["project"] },
+            { text:"What does an AI model learn from?", options:["Patterns in data","Magic","Only your opinion","Nothing"], answer:0, why:"AI models find patterns in examples called data.", book:"teachKids", page:55, topics:["ai","thinking"] },
+            { text:"Why should you verify AI output?", options:["It can be wrong or biased","It is always perfect","It has no words","It cannot be printed"], answer:0, why:"AI can make mistakes, so a human must check the answer.", book:"teachKids", page:55, topics:["ai"] },
+            { text:"What should you never share with an online tool?", options:["Your password","Your favourite colour","Your favourite game","Your idea for a story"], answer:0, why:"Private information like passwords must stay secret.", book:"codingKids", page:12, topics:["ai","project"] },
+            { text:"What does accessibility mean?", options:["Making things usable by everyone","Making things harder","Using only one device","Hiding information"], answer:0, why:"Accessible design helps as many people as possible.", book:"web", page:459, topics:["web","project"] },
+            { text:"In design thinking, what comes after ideate?", options:["Prototype","Ignore","Forget","Repeat"], answer:0, why:"After imagining ideas, you build a quick prototype to test.", book:"teachKids", page:87, topics:["project"] },
+            { text:"What is a test case?", options:["A check with an expected result","A random guess","A type of sprite","A web link"], answer:0, why:"A test case says what you do and what you expect to happen.", book:"codingKids", page:12, topics:["project","thinking"] },
+            { text:"What should a good pitch include?", options:["Problem, user, solution and demo","Only your name","A long joke","Nothing"], answer:0, why:"A pitch explains the problem, who it helps and how your solution works.", book:"teachKids", page:119, topics:["project"] },
+            { text:"What is a version name for?", options:["Saving different stages of work","Hiding files","Making colours","Deleting bugs"], answer:0, why:"Version names help you find and restore earlier work.", book:"teachKids", page:119, topics:["project"] },
+            { text:"What is a user?", options:["The person who uses your solution","A kind of computer","A programming language","A webpage colour"], answer:0, why:"The user is the person your project is made for.", book:"teachKids", page:10, topics:["project","thinking"] },
+            { text:"What should you do with personal data in an AI activity?", options:["Keep it private","Share it openly","Type your address","Use a real name"], answer:0, why:"Protect personal data; never put private details into a tool.", book:"teachKids", page:55, topics:["ai"] },
+            { text:"Who should check an AI answer before using it?", options:["A human","Nobody","The computer alone","A sprite"], answer:0, why:"Human review keeps the work accurate and responsible.", book:"teachKids", page:55, topics:["ai"] }
+        ];
+
+        let activeFilter = "All";
+        let selectedIndex = 0;
+        let quizNonce = 0;
+        let quizScore = 0;
+        let currentQuestions = [];
+        const answeredQuestions = new Set();
+        const STORAGE_KEY = "wtb-lesson-progress-v1";
+        const grid = document.getElementById("deckGrid");
+        const videoGrid = document.getElementById("videoGrid");
+        const activityGrid = document.getElementById("activityGrid");
+        const activityModalBody = document.getElementById("activityModalBody");
+        const quizGrid = document.getElementById("quizGrid");
+        const search = document.getElementById("search");
+
+        function loadProgress() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+            catch (error) { return {}; }
+        }
+
+        const progress = loadProgress();
+
+        function saveProgress() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+            catch (error) { return; }
+        }
+
+        function esc(value) {
+            return String(value).replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char]));
+        }
+
+        function taskState(index, taskIndex) {
+            return Boolean(progress[`${index}:${taskIndex}`]);
+        }
+
+        function lessonStats(lesson, index) {
+            const total = lesson.tasks.length;
+            const done = lesson.tasks.reduce((count, task, taskIndex) => count + (taskState(index, taskIndex) ? 1 : 0), 0);
+            return { total, done, percent: Math.round((done / total) * 100), complete: done === total };
+        }
+
+        function dayStatus(lesson, index) {
+            if (lessonStats(lesson, index).complete) return "done";
+            const today = todayYmd();
+            if (lesson.date === today) return "today";
+            return lesson.date > today ? "upcoming" : "review";
+        }
+
+        function statusLabel(status) {
+            return status === "done" ? "Done" : status === "today" ? "Today" : status === "upcoming" ? "Upcoming" : "Review";
+        }
+
+        function renderProgressSummary() {
+            let total = 0;
+            let done = 0;
+            let ready = 0;
+            lessons.forEach((lesson, index) => {
+                const stats = lessonStats(lesson, index);
+                total += stats.total;
+                done += stats.done;
+                if (stats.complete) ready += 1;
+            });
+            document.getElementById("planProgress").textContent = `${done} of ${total} tasks done · ${ready}/${lessons.length} days ready`;
+        }
+
+        function todayYmd() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        }
+
+        function nearestLessonIndex() {
+            const today = todayYmd();
+            const exact = lessons.findIndex(lesson => lesson.date === today);
+            if (exact >= 0) return exact;
+            const upcoming = lessons.findIndex(lesson => lesson.date > today);
+            return upcoming >= 0 ? upcoming : lessons.length - 1;
+        }
+
+        function seedFromString(text) {
+            let hash = 2166136261;
+            for (let i = 0; i < text.length; i += 1) {
+                hash ^= text.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return hash >>> 0;
+        }
+
+        function shuffled(items, seed) {
+            const copy = [...items];
+            let state = seed;
+            for (let i = copy.length - 1; i > 0; i -= 1) {
+                state += 0x6D2B79F5;
+                let value = state;
+                value = Math.imul(value ^ (value >>> 15), value | 1);
+                value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+                const random = ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+                const j = Math.floor(random * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function bookUrl(key, page) {
+            const book = sourceBooks[key];
+            return `BOOKS/${encodeURIComponent(book.file)}${page ? `#page=${page}` : ""}`;
+        }
+
+        function videoUrl(key) {
+            return `VIDEOS/${encodeURIComponent(sourceVideos[key].file)}`;
+        }
+
+        function renderDecks() {
+            const term = search.value.trim().toLowerCase();
+            const filtered = decks.filter(deck => {
+                const matchesFilter = activeFilter === "All" || deck.category === activeFilter;
+                const matchesSearch = !term || `${deck.title} ${deck.category} ${deck.description}`.toLowerCase().includes(term);
+                return matchesFilter && matchesSearch;
+            });
+            grid.innerHTML = filtered.map((deck, i) => `
+                <article class="deck">
+                    <div class="deck-cover ${deck.theme}">
+                        <span class="category">${deck.category}</span>
+                        <span class="cover-number">${String(decks.indexOf(deck)+1).padStart(2,"0")}</span>
+                        <span class="cover-icon">${deck.icon}</span>
+                    </div>
+                    <div class="deck-body">
+                        <h3>${deck.title}</h3>
+                        <p>${deck.description}</p>
+                        <div class="deck-actions">
+                            <button class="view-btn" data-deck="${decks.indexOf(deck)}">View slide summary →</button>
+                            <span class="slides">${deck.slides} slides</span>
+                        </div>
+                    </div>
+                </article>`).join("") || '<div class="empty" style="display:block">No presentations match your search.</div>';
+            grid.querySelectorAll(".view-btn").forEach(button => button.addEventListener("click", () => {
+                openDeck(Number(button.dataset.deck));
+            }));
+        }
+
+        function renderVideos() {
+            const term = search.value.trim().toLowerCase();
+            const filtered = videos.filter(video => {
+                const matchesFilter = activeFilter === "All" || video.category === activeFilter;
+                const matchesSearch = !term || `${video.title} ${video.category} ${video.description}`.toLowerCase().includes(term);
+                return matchesFilter && matchesSearch;
+            });
+            videoGrid.innerHTML = filtered.map(video => `
+                <article class="video-card">
+                    <video controls preload="metadata" src="VIDEOS/${encodeURIComponent(video.file)}"></video>
+                    <div class="video-card-body">
+                        <h3>${video.title}</h3>
+                        <p>${video.description}</p>
+                    </div>
+                </article>`).join("") || '<div class="empty" style="display:block">No videos match your search.</div>';
+        }
+
+        function renderDayPicker() {
+            document.getElementById("dayPicker").innerHTML = lessons.map((lesson, index) => `<option value="${index}">DAY ${String(index + 1).padStart(2, "0")} · ${esc(lesson.label)} · ${esc(lesson.title)}</option>`).join("");
+            document.getElementById("dayPicker").value = String(selectedIndex);
+        }
+
+        function renderEasyNotes() {
+            const extra = lessonExtras[selectedIndex];
+            document.getElementById("easyText").textContent = extra.easy;
+            document.getElementById("easyWords").innerHTML = extra.words.map(word => `<span>${esc(word)}</span>`).join("");
+            document.getElementById("easyRead").innerHTML = `<a class="read-link" href="${bookUrl(extra.read[0], extra.read[1])}" target="_blank" rel="noopener noreferrer">${esc(sourceBooks[extra.read[0]].title)} · page ${extra.read[1]} →</a><p>${esc(extra.read[2])}</p>`;
+        }
+
+        function renderActivities() {
+            const index = selectedIndex;
+            const lesson = lessons[index];
+            const stats = lessonStats(lesson, index);
+            const status = dayStatus(lesson, index);
+            const checklist = lesson.tasks.map((task, taskIndex) => {
+                const checked = taskState(index, taskIndex);
+                return `<label class="check-item ${checked ? "done" : ""}">
+                    <input type="checkbox" data-task="${index}:${taskIndex}" ${checked ? "checked" : ""}>
+                    <span><span class="check-type">${esc(task[0])}</span>${esc(task[1])}</span>
+                </label>`;
+            }).join("");
+            const bookTags = lesson.books.map(key => `<span class="activity-tag">${esc(sourceBooks[key].title)}</span>`).join("");
+            activityGrid.innerHTML = `
+            <article class="activity-card ${status === "done" ? "done" : ""} ${status === "today" ? "today" : ""}">
+                <div>
+                    <div class="activity-day">DAY ${String(index + 1).padStart(2, "0")} · ${esc(lesson.label.toUpperCase())}<span class="status-badge ${status}">${statusLabel(status)}</span></div>
+                    <h3>${esc(lesson.title)}</h3>
+                    <p>${esc(lesson.focus)}</p>
+                    <div class="activity-meta">
+                        <span class="activity-tag">${esc(lesson.category)}</span>
+                        ${bookTags}
+                    </div>
+                    <div class="activity-checklist">${checklist}</div>
+                </div>
+                <div class="activity-actions">
+                    <button class="activity-btn ${stats.complete ? "secondary" : ""}" data-lesson="${index}">${stats.complete ? "Completed" : "Mark day done"}</button>
+                    <button class="view-btn" data-open="${index}">Open lesson plan →</button>
+                </div>
+                <div class="progress-row">
+                    <span>Progress: ${stats.percent}%</span>
+                    <div class="progress-track"><div class="progress-fill" style="width: ${stats.percent}%"></div></div>
+                </div>
+            </article>`;
+            renderEasyNotes();
+            renderProgressSummary();
+        }
+
+        activityGrid.addEventListener("change", event => {
+            const input = event.target.closest("input[data-task]");
+            if (!input) return;
+            progress[input.dataset.task] = input.checked;
+            saveProgress();
+            renderActivities();
+        });
+
+        activityGrid.addEventListener("click", event => {
+            const open = event.target.closest("[data-open]");
+            if (open) {
+                openActivityModal(Number(open.dataset.open));
+                return;
+            }
+            const button = event.target.closest("[data-lesson]");
+            if (!button) return;
+            const index = Number(button.dataset.lesson);
+            const complete = lessonStats(lessons[index], index).complete;
+            lessons[index].tasks.forEach((task, taskIndex) => { progress[`${index}:${taskIndex}`] = !complete; });
+            saveProgress();
+            renderActivities();
+        });
+
+        document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => {
+            document.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("active"));
+            button.classList.add("active");
+            activeFilter = button.dataset.filter;
+            renderDecks(); renderVideos(); renderActivities();
+        }));
+
+        function moveDay(step) {
+            selectedIndex = Math.max(0, Math.min(lessons.length - 1, selectedIndex + step));
+            quizNonce = 0;
+            answeredQuestions.clear();
+            document.getElementById("dayPicker").value = String(selectedIndex);
+            renderActivities();
+            renderQuiz();
+        }
+
+        document.getElementById("dayPicker").addEventListener("change", event => {
+            selectedIndex = Number(event.target.value);
+            quizNonce = 0;
+            answeredQuestions.clear();
+            renderActivities();
+            renderQuiz();
+        });
+        document.getElementById("prevDay").addEventListener("click", () => moveDay(-1));
+        document.getElementById("nextDay").addEventListener("click", () => moveDay(1));
+        document.getElementById("todayBtn").addEventListener("click", () => {
+            selectedIndex = nearestLessonIndex();
+            quizNonce = 0;
+            answeredQuestions.clear();
+            renderDayPicker();
+            renderActivities();
+            renderQuiz();
+        });
+
+        search.addEventListener("input", () => { renderDecks(); renderVideos(); });
+
+        const modal = document.getElementById("modal");
+        const slide = document.getElementById("slide");
+        const thumbs = document.getElementById("slideThumbs");
+        let currentDeck = null;
+
+        function openDeck(index) {
+            currentDeck = decks[index];
+            document.getElementById("viewerTitle").textContent = currentDeck.title;
+            thumbs.innerHTML = "";
+            for (let i = 0; i < currentDeck.slides; i += 1) {
+                const button = document.createElement("button");
+                button.className = "slide-thumb" + (i === 0 ? " active" : "");
+                button.textContent = `${String(i + 1).padStart(2, "0")}  ${currentDeck.titles[i]} · p${currentDeck.pages[i]}`;
+                button.addEventListener("click", () => showSlide(i));
+                thumbs.appendChild(button);
+            }
+            showSlide(0); modal.classList.add("open"); document.body.style.overflow = "hidden";
+            document.getElementById("closeModal").focus();
+        }
+
+        function showSlide(index) {
+            const heading = currentDeck.titles[index];
+            const page = currentDeck.pages[index];
+            const pdfUrl = `BOOKS/${encodeURIComponent(currentDeck.book)}#page=${page}`;
+            slide.innerHTML = `<span class="slide-num">SLIDE ${String(index + 1).padStart(2, "0")} · BOOK PAGE ${page}</span>
+                <h2>${esc(heading)}</h2>
+                ${index === 0
+                    ? `<ul>${currentDeck.points.slice(0, 3).map(point => `<li>${esc(point)}</li>`).join("")}<li>Source: ${esc(currentDeck.book)}</li></ul>`
+                    : `<ul><li>${esc(currentDeck.points[index % currentDeck.points.length])}</li><li>Read page ${page} for the full explanation.</li><li>Try one small example, then explain it in your own words.</li></ul>`}
+                <div class="slide-actions">
+                    <a class="book-link" href="${pdfUrl}" target="_blank" rel="noopener noreferrer">Open page ${page} →</a>
+                    <span class="slide-note">Click the slide to open this exact page</span>
+                </div>
+                <div class="slide-nav" aria-label="Slide navigation">
+                    <button type="button" class="prev-slide" aria-label="Previous slide">←</button>
+                    <button type="button" class="next-slide" aria-label="Next slide">→</button>
+                </div>`;
+            slide.querySelector(".prev-slide").addEventListener("click", event => {
+                event.stopPropagation(); showSlide((index - 1 + currentDeck.slides) % currentDeck.slides);
+            });
+            slide.querySelector(".next-slide").addEventListener("click", event => {
+                event.stopPropagation(); showSlide((index + 1) % currentDeck.slides);
+            });
+            slide.onclick = event => {
+                if (!event.target.closest(".book-link") && !event.target.closest(".slide-nav")) {
+                    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+                }
+            };
+            document.querySelectorAll(".slide-thumb").forEach((b, i) => b.classList.toggle("active", i === index));
+        }
+
+        document.getElementById("closeModal").addEventListener("click", () => { modal.classList.remove("open"); document.body.style.overflow = ""; });
+        modal.addEventListener("click", event => { if (event.target === modal) document.getElementById("closeModal").click(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape" && modal.classList.contains("open")) document.getElementById("closeModal").click(); });
+
+        const activityModal = document.getElementById("activityModal");
+        const closeActivityModal = document.getElementById("closeActivityModal");
+
+        function openActivityModal(index) {
+            const lesson = lessons[index];
+            const status = dayStatus(lesson, index);
+            const bookLinks = lesson.books.map(key => `<a href="${bookUrl(key)}" target="_blank" rel="noopener noreferrer">${esc(sourceBooks[key].title)} (PDF) →</a>`).join("");
+            const videoLinks = lesson.videos.map(key => `<a class="secondary" href="${videoUrl(key)}" target="_blank" rel="noopener noreferrer">${esc(sourceVideos[key].title)} (video) →</a>`).join("");
+            const fromBooks = lesson.fromBooks.map(pair => `<li><strong>${esc(pair[0])}:</strong> ${esc(pair[1])}</li>`).join("");
+            const extra = lessonExtras[index];
+            const readLink = `<a class="read-link" href="${bookUrl(extra.read[0], extra.read[1])}" target="_blank" rel="noopener noreferrer">Read ${esc(sourceBooks[extra.read[0]].title)}, page ${extra.read[1]} →</a>`;
+            document.getElementById("activityTitle").textContent = `${lesson.label} · ${lesson.title}`;
+            activityModalBody.innerHTML = `
+                <div class="lesson-meta">
+                    <span class="activity-day">DAY ${String(index + 1).padStart(2, "0")} · ${esc(lesson.label)}</span>
+                    <span class="activity-tag">${esc(lesson.category)}</span>
+                    <span class="status-badge ${status}">${statusLabel(status)}</span>
+                </div>
+                <h2>${esc(lesson.title)}</h2>
+                <h3>Easy explanation</h3>
+                <p>${esc(extra.easy)}</p>
+                <div class="word-chips">${extra.words.map(word => `<span>${esc(word)}</span>`).join("")}</div>
+                ${readLink}
+                <h3>Teaching focus</h3>
+                <p>${esc(lesson.focus)}</p>
+                <h3>In class</h3>
+                <p>${esc(lesson.classWork)}</p>
+                <h3>Expected learner output</h3>
+                <p>${esc(lesson.output)}</p>
+                <h3>Home practice</h3>
+                <p>${esc(lesson.home)}</p>
+                <h3>From the books</h3>
+                <ul>${fromBooks}</ul>
+                <div class="resource-links">${bookLinks}${videoLinks}</div>`;
+            activityModal.classList.add("open");
+            document.body.style.overflow = "hidden";
+            closeActivityModal.focus();
+        }
+
+        closeActivityModal.addEventListener("click", () => { activityModal.classList.remove("open"); document.body.style.overflow = ""; });
+        activityModal.addEventListener("click", event => { if (event.target === activityModal) closeActivityModal.click(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape" && activityModal.classList.contains("open")) closeActivityModal.click(); });
+
+        function pickQuestions() {
+            const topics = lessonExtras[selectedIndex].topics;
+            let pool = questionBank.filter(question => question.topics.some(topic => topics.includes(topic)));
+            if (pool.length < 5) {
+                const extra = shuffled(questionBank, seedFromString(`fill:${selectedIndex}`));
+                pool = [...pool, ...extra.filter(question => !pool.includes(question))];
+            }
+            return shuffled(pool, seedFromString(`${lessons[selectedIndex].date}:${quizNonce}`)).slice(0, 5);
+        }
+
+        function renderQuiz() {
+            currentQuestions = pickQuestions().map(question => {
+                const options = shuffled(question.options, seedFromString(`${lessons[selectedIndex].date}:${quizNonce}:${question.text}`));
+                return { ...question, options, correctText: question.options[question.answer] };
+            });
+            answeredQuestions.clear();
+            quizScore = 0;
+            document.getElementById("quizScore").textContent = "Score: 0 / 5";
+            quizGrid.innerHTML = currentQuestions.map((question, index) => `
+                <article class="quiz-card">
+                    <div class="quiz-source">From <a href="${bookUrl(question.book, question.page)}" target="_blank" rel="noopener noreferrer">${esc(sourceBooks[question.book].title)} · page ${question.page}</a></div>
+                    <h3>${index + 1}. ${esc(question.text)}</h3>
+                    <div class="quiz-options">${question.options.map((option, optionIndex) => `<button class="quiz-option" data-q="${index}" data-o="${optionIndex}">${esc(option)}</button>`).join("")}</div>
+                    <p class="quiz-feedback" hidden></p>
+                </article>`).join("");
+        }
+
+        quizGrid.addEventListener("click", event => {
+            const button = event.target.closest(".quiz-option");
+            if (!button) return;
+            const questionIndex = Number(button.dataset.q);
+            if (answeredQuestions.has(questionIndex)) return;
+            answeredQuestions.add(questionIndex);
+            const question = currentQuestions[questionIndex];
+            const chosen = question.options[Number(button.dataset.o)];
+            const correct = chosen === question.correctText;
+            if (correct) quizScore += 1;
+            const card = button.closest(".quiz-card");
+            card.querySelectorAll(".quiz-option").forEach(option => {
+                option.disabled = true;
+                if (option.textContent === question.correctText) option.classList.add("correct");
+            });
+            if (!correct) button.classList.add("wrong");
+            const feedback = card.querySelector(".quiz-feedback");
+            feedback.hidden = false;
+            feedback.innerHTML = `${correct ? "Correct!" : "Not quite."} ${esc(question.why)}`;
+            document.getElementById("quizScore").textContent = `Score: ${quizScore} / ${currentQuestions.length}`;
+        });
+
+        document.getElementById("newQuestions").addEventListener("click", () => {
+            quizNonce += 1;
+            renderQuiz();
+        });
+
+        selectedIndex = nearestLessonIndex();
+        renderDecks();
+        renderVideos();
+        renderDayPicker();
+        renderActivities();
+        renderQuiz();
+    </script>
+</body>
+</html>
